@@ -4,13 +4,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -72,7 +72,8 @@
 
 (use-package org
   :hook (org-mode . visual-line-mode)
-        (org-mode . olivetti-mode)
+  (org-mode . olivetti-mode)
+  :bind ("C-c o i" . org-id-get-create)
   :config
   (setq org-startup-with-inline-images t
         org-startup-with-latex-preview t
@@ -93,9 +94,12 @@
   (plist-put org-format-latex-options :scale 1.35))
 
 (use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/org/roam"))
+  :bind (("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
   :config
-  (setq org-roam-directory (file-truename "~/org/roam"))
-  (org-roam-db-autosync-mode))
+  (org-roam-db-autosync-enable))
 
 (use-package org-appear
   :commands (org-appear-mode)
@@ -180,7 +184,14 @@
 	org-download-screenshot-method "screencapture"
 	;; Ensure images are inserted instead of their links when exporting to pdf (I think).
         org-download-link-format-function #'org-download-link-format-function-default))
- 	
+
+
+(use-package helm
+  :bind (("M-x" . helm-M-x)
+  ("C-x r b" . helm-filtered-bookmarks)
+  ("C-x C-f" . helm-find-files))
+  :config
+  (helm-mode 1))
 
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
 (setq reftex-plug-into-AUCTeX t)
