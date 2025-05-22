@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -12,6 +12,8 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; Global native visuals
+(setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
@@ -20,25 +22,29 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'org-mode-hook 'display-line-numbers-mode)
 
+;; Global formatting
 (setq winner-mode t
       tab-bar-history-mode t
       sentence-end-double-space nil)
-
 (set-face-attribute 'default nil :font "Iosevka" :height 170)
 
+;; Global keybindings
 ;; Use cmd key for meta and free option key
 (setq mac-command-modifier 'meta
       mac-option-modifier 'none)
 
 (set-register ?i (cons 'file "~/.emacs.d/init.el"))
 
+;; Package management
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
-;; and `package-pinned-packages`. Most users will not need or want to do this.
-;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
+;; Global package visuals
 (use-package doom-themes
   :ensure t
   :config
@@ -46,17 +52,19 @@
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-htb t)
-
-  ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
+  (doom-themes-org-config)
   ;; Enable custom neotree theme (nerd-icons must be installed!)
   ;(doom-themes-neotree-config)
   ;; or for treemacs users
   ;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   ;(doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-					;(doom-themes-org-config)
-  )
+    )
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
