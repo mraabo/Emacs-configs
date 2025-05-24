@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -12,8 +12,10 @@
  ;; If there is more than one, they won't work right.
  )
 
+(setq load-prefer-newer t) ;; use newer init source file even if not compiled yet
+
 ;; Global native visuals
-(setq inhibit-startup-message t)
+(setq inhibit-startup-screen t) 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
@@ -42,11 +44,10 @@
 (unless package-archive-contents
   (package-refresh-contents))
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t) ;; adds ensure t to all packages
 
 ;; Global package visuals
 (use-package doom-themes
-  :ensure t
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -62,22 +63,45 @@
     )
 
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1))
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
+;; Completions
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper-isearch)
+	 ("M-x" . counsel-M-x)
+	 ("C-x b" . ivy-switch-buffer))
+  :config (ivy-mode 1)
+          (counsel-mode 1))
+
+(use-package counsel)
+(use-package swiper)
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+
+;; LaTex
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+(setq reftex-plug-into-AUCTeX t)
 (pdf-tools-install)
 
+
+;; Spell control
 (setq-default ispell-program-name "aspell")
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))
 
-
+;; Org
 (use-package org
   :hook (org-mode . visual-line-mode)
   (org-mode . olivetti-mode)
@@ -194,12 +218,4 @@
         org-download-link-format-function #'org-download-link-format-function-default))
 
 
-(use-package helm
-  :bind (("M-x" . helm-M-x)
-  ("C-x r b" . helm-filtered-bookmarks)
-  ("C-x C-f" . helm-find-files))
-  :config
-  (helm-mode 1))
 
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
-(setq reftex-plug-into-AUCTeX t)
