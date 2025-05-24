@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(helpful ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -84,6 +84,17 @@
   :init
   (ivy-rich-mode 1))
 
+;; Documentation
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
 
 ;; LaTex
 (setq TeX-auto-save t)
@@ -94,7 +105,7 @@
 (pdf-tools-install)
 
 
-;; Spell control
+;; Spelling correction
 (setq-default ispell-program-name "aspell")
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
