@@ -70,19 +70,14 @@
 
 ;; Completions
 (use-package ivy
+  :demand t
   :diminish
   :bind (("C-s" . swiper-isearch)
 	 ("M-x" . counsel-M-x)
 	 ("C-x b" . ivy-switch-buffer))
   :config (ivy-mode 1)
-          (counsel-mode 1))
+  (counsel-mode 1))
 
-(use-package counsel)
-(use-package swiper)
-
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
 
 ;; Documentation
 (use-package helpful
@@ -108,6 +103,9 @@
 ;; Spelling correction
 (setq-default ispell-program-name "aspell")
 (use-package jinx
+  :hook (emacs-startup . (lambda ()
+                           (global-jinx-mode)
+                           (setq jinx-languages "en_GB")))
   :hook (emacs-startup . global-jinx-mode)
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))
@@ -123,7 +121,8 @@
         org-preview-latex-default-process 'dvisvgm ; more readable latex
         org-babel-default-header-args '(:results . "raw") ; return raw not tables
 	org-hide-leading-stars t
-	org-pretty-entities t)
+	org-pretty-entities t
+	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib"))
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
@@ -133,7 +132,7 @@
                   (org-level-6 . 1.1)
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
-    (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
+    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
   (plist-put org-format-latex-options :scale 1.35))
 
 (use-package org-roam
@@ -162,6 +161,7 @@
   :config
   (setq org-superstar-leading-bullet " ")
   (setq org-superstar-headline-bullets-list '("◉" "○" "⚬" "◈" "◇"))
+  (setq org-superstar-item-bullet-alist '((?* . ?•) (?+ . ?➤)(?- . ?•)))
   (setq org-superstar-special-todo-items t)
   ;; Makes TODO header bullets into boxes
   (setq org-superstar-todo-bullet-alist '(("TODO"  . 9744)
