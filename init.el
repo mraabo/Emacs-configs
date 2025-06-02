@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(helpful ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(projectile all-the-icons helpful ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -46,7 +46,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t) ;; adds ensure t to all packages
 
-;; Global package visuals
+;; Global visuals
 (use-package doom-themes
   :config
   ;; Global settings (defaults)
@@ -61,6 +61,7 @@
   ;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   ;(doom-themes-treemacs-config)
     )
+(use-package all-the-icons)
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
@@ -68,7 +69,7 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Completions
+;; Navigation
 (use-package ivy
   :demand t
   :diminish
@@ -77,6 +78,13 @@
 	 ("C-x b" . ivy-switch-buffer))
   :config (ivy-mode 1)
   (counsel-mode 1))
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projective-mode)
+  :custom ((projectile-completionsystem 'ivy))
+  :bind-keymap
+  ("C-c p"  . projectile-command-map))
 
 
 ;; Documentation
