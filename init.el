@@ -3,14 +3,24 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
+ '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(which-key projectile all-the-icons helpful ivy-rich rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(which-key projectile all-the-icons helpful rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+(custom-set-variables
+  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
+  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.emacs.d/autosaves/" t)
 
 (setq load-prefer-newer t) ;; use newer init source file even if not compiled yet
 
@@ -134,6 +144,7 @@
   (setq org-startup-with-inline-images t
         org-startup-with-latex-preview t
         org-preview-latex-default-process 'dvisvgm ; more readable latex
+	org-format-latex-options (plist-put org-format-latex-options :scale 1.5) ; increase size of latex
         org-babel-default-header-args '(:results . "raw") ; return raw not tables
 	org-hide-leading-stars t
 	org-pretty-entities t
