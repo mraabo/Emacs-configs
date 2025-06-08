@@ -148,6 +148,7 @@
         org-babel-default-header-args '(:results . "raw") ; return raw not tables
 	org-hide-leading-stars t
 	org-pretty-entities t
+	org-ellipsis " ▾" ; change "..." on expandable headlines
 	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib"))
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
