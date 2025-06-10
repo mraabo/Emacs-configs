@@ -149,7 +149,8 @@
 	org-hide-leading-stars t
 	org-pretty-entities t
 	org-ellipsis " ▾" ; change "..." on expandable headlines
-	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib"))
+	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib")
+	org-image-actual-width 600)
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
@@ -246,7 +247,7 @@
   ;; Setting default directory to store images related to the use of org-download.
   (setq-default org-download-image-dir "~/org/roam/cs_notes/Assets")
   ;; Set all images to have width 600
-  (setq org-download-image-org-width 500
+  (setq org-download-image-org-width 600
         ;; Set links to be correctly formatted with the approach of storing in directory.
         org-download-link-format "[[file:%s]]\n"
         org-download-abbreviate-filename-function #'file-relative-name
