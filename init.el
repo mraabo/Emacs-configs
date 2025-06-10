@@ -144,7 +144,7 @@
   (setq org-startup-with-inline-images t
         org-startup-with-latex-preview t
         org-preview-latex-default-process 'dvisvgm ; more readable latex
-	org-format-latex-options (plist-put org-format-latex-options :scale 1.5) ; increase size of latex
+	org-preview-latex-image-directory "~/.emacs.d/ltximg/"
         org-babel-default-header-args '(:results . "raw") ; return raw not tables
 	org-hide-leading-stars t
 	org-pretty-entities t
@@ -162,6 +162,7 @@
                   (org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
   (plist-put org-format-latex-options :scale 1.35))
+ 
 
 (use-package org-roam
   :custom
@@ -219,9 +220,9 @@
   (defun svg-progress-percent (value)
     (svg-image (svg-lib-concat
                 (svg-lib-progress-bar (/ (string-to-number value) 100.0)
-                                      nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                    nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
                 (svg-lib-tag (concat value "%")
-                             nil :stroke 0 :margin 0)) :ascent 'center))
+                    nil :stroke 0 :margin 0)) :ascent 'center))
   
   (defun svg-progress-count (value)
     (let* ((seq (mapcar #'string-to-number (split-string value "/")))
@@ -229,18 +230,17 @@
            (total (float (cadr seq))))
       (svg-image (svg-lib-concat
                   (svg-lib-progress-bar (/ count total) nil
-                                        :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+		      :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
                   (svg-lib-tag value nil
-                               :stroke 0 :margin 0)) :ascent 'center)))
+                      :stroke 0 :margin 0)) :ascent 'center)))
   
   (setq svg-tag-tags
+        ;; Progress
         `(
-          ;; Progress
           ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
-                                             (svg-progress-percent (substring tag 1 -2)))))
+              (svg-progress-percent (substring tag 1 -2)))))
           ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
-                                          (svg-progress-count (substring tag 1 -1)))))
-          )))
+              (svg-progress-count (substring tag 1 -1))))))))
 
 (use-package org-download
   :config
