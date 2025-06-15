@@ -6,7 +6,7 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(which-key projectile all-the-icons helpful rainbow-delimiters rainbow-delimeters counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -145,12 +145,12 @@
         org-startup-with-latex-preview t
         org-preview-latex-default-process 'dvisvgm ; more readable latex
 	org-preview-latex-image-directory "~/.emacs.d/ltximg/"
-        org-babel-default-header-args '(:results . "raw") ; return raw not tables
 	org-hide-leading-stars t
 	org-pretty-entities t
 	org-ellipsis " ▾" ; change "..." on expandable headlines
 	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib")
-	org-image-actual-width 600)
+	org-image-actual-width 600
+	org-confirm-babel-evaluate nil)
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
@@ -247,9 +247,7 @@
   ;; Setting default directory to store images related to the use of org-download.
   (setq-default org-download-image-dir "~/org/roam/cs_notes/Assets")
   ;; Set all images to have width 600
-  (setq org-download-image-org-width 600
-        ;; Set links to be correctly formatted with the approach of storing in directory.
-        org-download-link-format "[[file:%s]]\n"
+  (setq org-download-link-format "[[file:%s]]\n" ; format links
         org-download-abbreviate-filename-function #'file-relative-name
 	;; set screenshot method to macos
 	org-download-screenshot-method "screencapture"
