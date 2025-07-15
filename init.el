@@ -6,7 +6,7 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(exec-path-from-shell ein lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -15,9 +15,7 @@
  )
 
 ;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
-(custom-set-variables
-  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
-  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
+
 
 ;; create the autosave dir if necessary, since emacs won't.
 (make-directory "~/.emacs.d/autosaves/" t)
@@ -123,6 +121,7 @@
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
 (setq reftex-plug-into-AUCTeX t)
 (pdf-tools-install)
+(setq LaTeX-default-environment "equation*")
 
 
 ;; Spelling correction
@@ -150,7 +149,8 @@
 	org-ellipsis " ▾" ; change "..." on expandable headlines
 	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib")
 	org-image-actual-width 600
-	org-confirm-babel-evaluate nil)
+	org-confirm-babel-evaluate nil
+	org-startup-folded 'fold)
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
@@ -161,14 +161,15 @@
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
-  (plist-put org-format-latex-options :scale 1.35))
+  (plist-put org-format-latex-options :scale 1.75))
  
 
 (use-package org-roam
   :custom
   (org-roam-directory (file-truename "~/org/roam"))
   :bind (("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
+         ("C-c n i" . org-roam-node-insert)
+	 ("C-c n c" . org-roam-capture))
   :config
   (org-roam-db-autosync-enable))
 
@@ -255,4 +256,58 @@
         org-download-link-format-function #'org-download-link-format-function-default))
 
 
+;; Gamify own version
+(load-file "~/projects/emacs/gamify/gamify.el")
+;;(require 'gamify)
+(setq gamify-org-p t)                    ;; Enable Org integration
+(setq gamify-stats-file "~/.emacs.d/gamify-stats")  ;; Optional: set custom path
+(setq gamify-focus-stats '("Haskell")) ;; Set initial viewpoint of bar - set to what your working on.
+(gamify-setup-progress-bars)
+(setq gamify-format "%Lf %PBF")  ; Shows: Level [████░░░░] pct%
+(setq gamify-org-roam-p t)  ; Enable Org Roam gamification
+(gamify-start)
 
+
+;; Copy shell PATH to emacs env, since Emacs.app runs isolated env.
+(use-package exec-path-from-shell
+  :init
+  (when (memq window-system '(mac ns))
+  (setenv "SHELL" "/bin/zsh")
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs
+   '("PATH"))))
+
+;; Haskell
+(use-package haskell-mode)
+(let ((my-ghcup-path (expand-file-name "~/.ghcup/bin")))
+  (setenv "PATH" (concat my-ghcup-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-ghcup-path))
+
+;; Python
+(use-package python-mode
+  :ensure nil
+  :hook (python-mode . lsp-deferred)
+  :custom
+  (python-shell-interpreter "python3"))
+
+(use-package ein
+  :config
+  (setq ein:output-area-inlined-images t))
+
+
+;; lsp
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((haskell-mode . lsp)
+	 (haskell-literate-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration)
+	 (python-mode . lsp))
+  :commands lsp)
+
+(use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package dap-mode)
+
+(use-package lsp-haskell
+  :after lsp-mode)
