@@ -6,7 +6,7 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(exec-path-from-shell ein lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(ox-hugo exec-path-from-shell ein lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -249,11 +249,16 @@
   (setq-default org-download-image-dir "~/org/roam/cs_notes/Assets")
   ;; Set all images to have width 600
   (setq org-download-link-format "[[file:%s]]\n" ; format links
-        org-download-abbreviate-filename-function #'file-relative-name
+        ;; org-download-abbreviate-filename-function #'file-relative-name
 	;; set screenshot method to macos
 	org-download-screenshot-method "screencapture"
 	;; Ensure images are inserted instead of their links when exporting to pdf (I think).
         org-download-link-format-function #'org-download-link-format-function-default))
+
+(use-package ox-hugo
+  :ensure t   ;Auto-install the package from Melpa
+  :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
+  :after ox)
 
 
 ;; Gamify own version
