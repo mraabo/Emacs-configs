@@ -249,11 +249,12 @@
   (setq-default org-download-image-dir "~/org/roam/cs_notes/Assets")
   ;; Set all images to have width 600
   (setq org-download-link-format "[[file:%s]]\n" ; format links
-        ;; org-download-abbreviate-filename-function #'file-relative-name
+         org-download-abbreviate-filename-function #'expand-file-name ; convert to absulate path
 	;; set screenshot method to macos
 	org-download-screenshot-method "screencapture"
 	;; Ensure images are inserted instead of their links when exporting to pdf (I think).
-        org-download-link-format-function #'org-download-link-format-function-default))
+        org-download-link-format-function #'org-download-link-format-function-default)
+  :bind (("C-c n d" . org-download-clipboard)))
 
 (use-package ox-hugo
   :ensure t   ;Auto-install the package from Melpa
