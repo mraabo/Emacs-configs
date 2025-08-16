@@ -151,6 +151,8 @@
 	org-image-actual-width 600
 	org-confirm-babel-evaluate nil
 	org-startup-folded 'fold)
+   (set-face-attribute 'org-meta-line nil ;; make #+ lines same colour as comments
+                      :foreground (face-foreground 'font-lock-comment-face))
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
