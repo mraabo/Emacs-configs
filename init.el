@@ -68,7 +68,8 @@
   ;; or for treemacs users
   ;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   ;(doom-themes-treemacs-config)
-    )
+  )
+
 (use-package all-the-icons)
 
 (use-package doom-modeline
@@ -76,6 +77,8 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(set-face-attribute 'link nil :weight 'normal) ; make links non-bold
 
 ;; Navigation
 (use-package ivy
