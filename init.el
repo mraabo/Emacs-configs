@@ -171,7 +171,8 @@
   (org-roam-directory (file-truename "~/org/roam"))
   :bind (("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
-	 ("C-c n c" . org-roam-capture))
+	 ("C-c n c" . org-roam-capture)
+	 ("C-c n t" . org-roam-tag-add))
   :config
   (org-roam-db-autosync-enable))
 
@@ -261,7 +262,9 @@
 (use-package ox-hugo
   :ensure t   ;Auto-install the package from Melpa
   :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
-  :after ox)
+  :after ox
+  :config
+  (setq org-hugo-base-dir "~/personal_website"))
 
 
 ;; Gamify own version
