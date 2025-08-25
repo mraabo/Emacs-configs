@@ -153,7 +153,8 @@
 	org-cite-bibliography '("/Users/mraabo/org/bibFile.bib")
 	org-image-actual-width 600
 	org-confirm-babel-evaluate nil
-	org-startup-folded 'fold)
+	org-startup-folded 'fold
+	org-startup-indented t)
    (set-face-attribute 'org-meta-line nil ;; make #+ lines same colour as comments
                       :foreground (face-foreground 'font-lock-comment-face))
   (dolist (face '((org-document-title . 1.8)
@@ -175,9 +176,11 @@
   :bind (("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
 	 ("C-c n c" . org-roam-capture)
-	 ("C-c n t" . org-roam-tag-add))
+	 ("C-c n t" . org-roam-tag-add)
+	 ("C-c n j" . org-roam-dailies-capture-today))
   :config
-  (org-roam-db-autosync-enable))
+  (org-roam-db-autosync-enable)
+  (setq org-roam-dailies-directory "thesis/journal/"))
 
 (use-package org-appear
   :commands (org-appear-mode)
