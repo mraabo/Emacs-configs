@@ -6,7 +6,7 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(ox-hugo exec-path-from-shell ein lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -51,6 +51,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
+
 (require 'use-package)
 (setq use-package-always-ensure t) ;; adds ensure t to all packages
 
@@ -60,7 +61,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-htb t)
+  (load-theme 'doom-htb t) ; at Applications/Emacs.app/Contents/Resources/etc/themes/
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
   ;; Enable custom neotree theme (nerd-icons must be installed!)
@@ -70,7 +71,11 @@
   ;(doom-themes-treemacs-config)
   )
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :ensure t)
+
+;; Enable awesome font globally
+(set-fontset-font t '(#xf000 . #xf8ff) "Font Awesome 6 Free")
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
@@ -100,6 +105,20 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
+;; RSS feed
+(use-package elfeed
+    :custom
+    (elfeed-db-directory
+     (expand-file-name "elfeed" user-emacs-directory))
+    (elfeed-show-entry-switch 'display-buffer)
+    :bind
+    ("C-c w e" . elfeed))
+(use-package elfeed-org
+  :ensure t
+  :init
+  :config
+  (setq rmh-elfeed-org-files (list "elfeed.org")))
+
 ;; Documentation
 (use-package helpful
   :custom
@@ -116,6 +135,27 @@
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 4))
+
+;; Eshell
+(require 'doom-themes)
+
+(load-file "~/projects/emacs/pretty-eshell/pretty-eshell.el")
+
+; Copy shell PATH to emacs env, since Emacs.app runs isolated env.
+(use-package exec-path-from-shell
+  :init
+  (when (memq window-system '(mac ns))
+    ;; Use zsh as the shell
+    (setenv "SHELL" "/bin/zsh")
+
+    ;; Don’t run an interactive shell – it triggers the warning
+    (setq exec-path-from-shell-arguments '("-l"))   ; or nil
+
+    ;; Initialise and copy only PATH
+    (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-envs '("PATH"))))
+
+
 
 ;; LaTex
 (setq TeX-auto-save t)
@@ -285,14 +325,6 @@
 (gamify-start)
 
 
-;; Copy shell PATH to emacs env, since Emacs.app runs isolated env.
-(use-package exec-path-from-shell
-  :init
-  (when (memq window-system '(mac ns))
-  (setenv "SHELL" "/bin/zsh")
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs
-   '("PATH"))))
 
 ;; Haskell
 (use-package haskell-mode)
@@ -306,10 +338,6 @@
   :hook (python-mode . lsp-deferred)
   :custom
   (python-shell-interpreter "python3"))
-
-(use-package ein
-  :config
-  (setq ein:output-area-inlined-images t))
 
 
 ;; lsp
