@@ -324,9 +324,9 @@
          ("C-æ" . org-table-unwrap-cell-region)
          ("C-ø" . my/org-table-wrap-to-40)))
 
-;(use-package org-pretty-table
-;  :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
-;  :hook (org-mode . org-pretty-table-mode))
+(use-package org-pretty-table
+  :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
+  :hook (org-mode . org-pretty-table-mode))
 
 
 ;; Gamify own version
