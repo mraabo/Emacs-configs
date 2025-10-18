@@ -312,12 +312,21 @@
   :config
   (setq org-hugo-base-dir "~/personal_website"))
 
-(use-package org-table-wrap-functions
-  :load-path  "~/projects/emacs/pretty-org-tables/org-table-wrap-functions.el"
-  :bind (:map org-mode-map ("C-å" . 'org-table-column-wrap-to-point))
-  :bind (:map org-mode-map ("C-æ" . 'org-table-unwrap-cell-region))
-  :bind (:map org-mode-map ("C-ø" . 'org-table-column-wrap-to-width 40))
+(defun my/org-table-wrap-to-40 ()
+  "Wrap the current column to exactly 40 characters."
+  (interactive)
+  ;; ignore any prefix arg – we always want 40
+  (org-table-column-wrap-to-width 40))
 
+(use-package org-table-wrap-functions
+  :load-path "~/projects/emacs/pretty-org-tables"
+  :bind (("C-å" . org-table-column-wrap-to-point)
+         ("C-æ" . org-table-unwrap-cell-region)
+         ("C-ø" . my/org-table-wrap-to-40)))
+
+;(use-package org-pretty-table
+;  :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
+;  :hook (org-mode . org-pretty-table-mode))
 
 
 ;; Gamify own version
