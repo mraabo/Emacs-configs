@@ -312,6 +312,13 @@
   :config
   (setq org-hugo-base-dir "~/personal_website"))
 
+(use-package org-table-wrap-functions
+  :load-path  "~/projects/emacs/pretty-org-tables/org-table-wrap-functions.el"
+  :bind (:map org-mode-map ("C-å" . 'org-table-column-wrap-to-point))
+  :bind (:map org-mode-map ("C-æ" . 'org-table-unwrap-cell-region))
+  :bind (:map org-mode-map ("C-ø" . 'org-table-column-wrap-to-width 40))
+
+
 
 ;; Gamify own version
 (load-file "~/projects/emacs/gamify/gamify.el")
