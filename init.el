@@ -6,7 +6,7 @@
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
  '(package-selected-packages
-   '(fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -113,6 +113,7 @@
     (elfeed-show-entry-switch 'display-buffer)
     :bind
     ("C-c w e" . elfeed))
+
 (use-package elfeed-org
   :ensure t
   :init
@@ -138,8 +139,10 @@
 
 ;; Eshell
 (require 'doom-themes)
-
 (load-file "~/projects/emacs/pretty-eshell/pretty-eshell.el")
+
+(keymap-global-set "C-x e" 'eshell)
+
 
 ; Copy shell PATH to emacs env, since Emacs.app runs isolated env.
 (use-package exec-path-from-shell
@@ -149,7 +152,7 @@
     (setenv "SHELL" "/bin/zsh")
 
     ;; Don’t run an interactive shell – it triggers the warning
-    (setq exec-path-from-shell-arguments '("-l"))   ; or nil
+    ;(setq exec-path-from-shell-arguments '("-l"))   ; or nil
 
     ;; Initialise and copy only PATH
     (exec-path-from-shell-initialize)
@@ -180,7 +183,6 @@
 ;; Org
 (use-package org
   :hook (org-mode . visual-line-mode)
-  (org-mode . olivetti-mode)
   :bind ("C-c o i" . org-id-get-create)
   :config
   (setq org-startup-with-inline-images t
@@ -312,17 +314,18 @@
   :config
   (setq org-hugo-base-dir "~/personal_website"))
 
-(defun my/org-table-wrap-to-40 ()
-  "Wrap the current column to exactly 40 characters."
-  (interactive)
-  ;; ignore any prefix arg – we always want 40
-  (org-table-column-wrap-to-width 40))
-
 (use-package org-table-wrap-functions
   :load-path "~/projects/emacs/pretty-org-tables"
-  :bind (("C-å" . org-table-column-wrap-to-point)
-         ("C-æ" . org-table-unwrap-cell-region)
-         ("C-ø" . my/org-table-wrap-to-40)))
+  :bind (("C-c p" . org-table-column-wrap-to-point)
+         ("C-c u" . org-table-unwrap-cell-region)))
+
+(use-package olivetti
+  :ensure t
+  :config
+  (setq olivetti-body-width 80)
+  ;; Auto‑enable in Org buffers
+  (add-hook 'org-mode-hook #'olivetti-mode))
+
 
 (use-package org-pretty-table
   :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
@@ -350,8 +353,8 @@
 
 ;; Python
 (use-package python-mode
-  :ensure nil
-  :hook (python-mode . lsp-deferred)
+  :hook
+  (python-mode . lsp-deferred)
   :custom
   (python-shell-interpreter "python3"))
 
