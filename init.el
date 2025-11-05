@@ -115,9 +115,9 @@
     ("C-c w e" . elfeed))
 
 (use-package elfeed-org
-  :ensure t
-  :init
+  :after (elfeed)
   :config
+  (elfeed-org)
   (setq rmh-elfeed-org-files (list "elfeed.org")))
 
 ;; Documentation
@@ -185,6 +185,7 @@
   :hook (org-mode . visual-line-mode)
   :bind ("C-c o i" . org-id-get-create)
   :config
+  ;; Visuals
   (setq org-startup-with-inline-images t
         org-startup-with-latex-preview t
         org-preview-latex-default-process 'dvisvgm ; more readable latex
@@ -196,7 +197,8 @@
 	org-image-actual-width 600
 	org-confirm-babel-evaluate nil
 	org-startup-folded 'fold
-	org-startup-indented t)
+	org-startup-indented t
+	org-pretty-entities nil)
    (set-face-attribute 'org-meta-line nil ;; make #+ lines same colour as comments
                       :foreground (face-foreground 'font-lock-comment-face))
   (dolist (face '((org-document-title . 1.8)
@@ -209,7 +211,11 @@
                   (org-level-7 . 1.1)
                   (org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
-  (plist-put org-format-latex-options :scale 1.75))
+  (plist-put org-format-latex-options :scale 1.75)
+  ;; org-clock
+  (org-clock-persistence-insinuate)
+  (setq org-clock-out-when-done t
+	org-clock-persist t))
  
 
 (use-package org-roam
@@ -224,7 +230,7 @@
   (org-roam-db-autosync-enable)
   (setq org-roam-dailies-directory "thesis/journal/"))
 
-(use-package org-appear
+(use-package org-appear ;; hides emphasis until touched by cursor
   :commands (org-appear-mode)
   :hook     (org-mode . org-appear-mode)
   :config
@@ -233,7 +239,7 @@
         org-appear-autolinks      t))
 
 
-(use-package org-fragtog
+(use-package org-fragtog ;; hides latex source until touched by cursor
   :hook (org-mode . org-fragtog-mode))        
 
 
@@ -322,7 +328,7 @@
 (use-package olivetti
   :ensure t
   :config
-  (setq olivetti-body-width 80)
+  (setq-default olivetti-body-width 82)
   ;; Auto‑enable in Org buffers
   (add-hook 'org-mode-hook #'olivetti-mode))
 
