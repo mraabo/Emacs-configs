@@ -86,6 +86,10 @@
 (set-face-attribute 'link nil :weight 'normal) ; make links non-bold
 
 ;; Navigation
+
+(keymap-global-set "C-x C-p" 'previous-buffer)
+(keymap-global-set "C-x C-n" 'next-buffer)
+
 (use-package ivy
   :demand t
   :diminish
