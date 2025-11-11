@@ -177,8 +177,8 @@
                            (global-jinx-mode)
                            (setq jinx-languages "en_GB")))
   :hook (emacs-startup . global-jinx-mode)
-  :bind (("M-$" . jinx-correct)
-         ("C-M-$" . jinx-languages)))
+  :bind (("M-q" . jinx-correct)
+         ("C-M-q" . jinx-languages)))
 
 ;; Org
 (use-package org
