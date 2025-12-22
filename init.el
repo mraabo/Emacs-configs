@@ -5,8 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
+ '(custom-safe-themes
+   '("8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" "fd22a3aac273624858a4184079b7134fb4e97104d1627cb2b488821be765ff17" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" default))
  '(package-selected-packages
-   '(python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -61,7 +63,8 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-htb t) ; at Applications/Emacs.app/Contents/Resources/etc/themes/
+  (load-theme 'doom-nord t)
+  ;(load-theme 'doom-htb t) ; at Applications/Emacs.app/Contents/Resources/etc/themes/
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
   ;; Enable custom neotree theme (nerd-icons must be installed!)
@@ -204,7 +207,10 @@
 	org-startup-indented t
 	org-pretty-entities nil)
    (set-face-attribute 'org-meta-line nil ;; make #+ lines same colour as comments
-                      :foreground (face-foreground 'font-lock-comment-face))
+                       :foreground (face-foreground 'font-lock-comment-face))
+   (set-face-attribute 'org-link nil ;; make org-links slanted instead of underlined
+		       :slant 'italic :underline nil)
+   
   (dolist (face '((org-document-title . 1.8)
 		  (org-level-1 . 1.35)
                   (org-level-2 . 1.3)
@@ -242,6 +248,10 @@
         org-appear-autoemphasis   t   
         org-appear-autolinks      t))
 
+(use-package org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t))
 
 (use-package org-fragtog ;; hides latex source until touched by cursor
   :hook (org-mode . org-fragtog-mode))        
@@ -361,27 +371,9 @@
   (setenv "PATH" (concat my-ghcup-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-ghcup-path))
 
-;; Python
-(use-package python-mode
-  :hook
-  (python-mode . lsp-deferred)
-  :custom
-  (python-shell-interpreter "python3"))
+;; Golang
+(use-package go-mode)
 
 
-;; lsp
-(use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((haskell-mode . lsp)
-	 (haskell-literate-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration)
-	 (python-mode . lsp))
-  :commands lsp)
 
-(use-package lsp-ui :commands lsp-ui-mode)
-;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-(use-package dap-mode)
 
-(use-package lsp-haskell
-  :after lsp-mode)
