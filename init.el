@@ -8,7 +8,7 @@
  '(custom-safe-themes
    '("8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" "fd22a3aac273624858a4184079b7134fb4e97104d1627cb2b488821be765ff17" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" default))
  '(package-selected-packages
-   '(all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -354,6 +354,16 @@
 (use-package org-pretty-table
   :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
   :hook (org-mode . org-pretty-table-mode))
+
+
+(use-package org-journal
+  :ensure t
+  :custom
+  (org-journal-dir "~/org/journal")
+  (org-journal-file-format "%Y%m%d.org")
+  (org-journal-date-format "%A, %d %B %Y")
+  :bind
+  ("C-c n j" . org-journal-new-entry))
 
 
 ;; Gamify own version
