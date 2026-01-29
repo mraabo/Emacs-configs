@@ -8,7 +8,7 @@
  '(custom-safe-themes
    '("8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" "fd22a3aac273624858a4184079b7134fb4e97104d1627cb2b488821be765ff17" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" default))
  '(package-selected-packages
-   '(dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -74,8 +74,7 @@
   ;(doom-themes-treemacs-config)
   )
 
-(use-package all-the-icons
-  :ensure t)
+(use-package all-the-icons)
 
 ;; Enable awesome font globally
 (set-fontset-font t '(#xf000 . #xf8ff) "Font Awesome 6 Free")
@@ -101,6 +100,14 @@
 	 ("C-x b" . ivy-switch-buffer))
   :config (ivy-mode 1)
   (counsel-mode 1))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :ensure t
+  :init (ivy-rich-mode 1))
 
 (use-package projectile
   :diminish projectile-mode
@@ -237,8 +244,7 @@
 	 ("C-c n t" . org-roam-tag-add)
 	 ("C-c n j" . org-roam-dailies-capture-today))
   :config
-  (org-roam-db-autosync-enable)
-  (setq org-roam-dailies-directory "thesis/journal/"))
+  (org-roam-db-autosync-enable))
 
 (use-package org-appear ;; hides emphasis until touched by cursor
   :commands (org-appear-mode)
@@ -328,7 +334,6 @@
   :bind (("C-c n d" . org-download-clipboard)))
 
 (use-package ox-hugo
-  :ensure t   ;Auto-install the package from Melpa
   :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
   :after ox
   :config
@@ -340,7 +345,6 @@
          ("C-c u" . org-table-unwrap-cell-region)))
 
 (use-package olivetti
-  :ensure t
   :config
   (setq-default olivetti-body-width 82)
   ;; Auto‑enable in Org buffers
@@ -364,6 +368,25 @@
 (gamify-start)
 
 
+;; Debugging
+(use-package dape
+  :init
+  (setq
+   
+   dape-configs
+   '(
+     (go-main ;; debug main .go file
+      modes (go-mode)
+      command "dlv"
+      command-args ("dap" "--listen" "127.0.0.1::autoport")
+                 command-cwd dape-command-cwd
+                 port :autoport
+                 :type "debug"
+                 :request "launch"
+                 :name "Debug Go Program"
+                 :cwd "."
+                 :program "."
+                 :args []))))
 
 ;; Haskell
 (use-package haskell-mode)
@@ -372,7 +395,11 @@
   (add-to-list 'exec-path my-ghcup-path))
 
 ;; Golang
-(use-package go-mode)
+(use-package go-mode
+  :init
+  (add-hook 'before-save-hook #'gofmt-before-save))
+
+  
 
 
 
