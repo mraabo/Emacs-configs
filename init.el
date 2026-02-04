@@ -366,6 +366,22 @@
   ("C-c n j" . org-journal-new-entry))
 
 
+;; Insert link to non-existing org-roam note without displaying its buffer.
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c n I") #'org-roam-node-insert-immediate))
+
+
+;; Aggregated clocks for multiple timelog files.
+(load-file "~/projects/emacs/aggregated-clocks/aggregated-clocks.el")
+
+
 ;; Gamify own version
 (load-file "~/projects/emacs/gamify/gamify.el")
 ;;(require 'gamify)
