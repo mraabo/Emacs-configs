@@ -273,8 +273,8 @@
   ;; Makes TODO header bullets into boxes
   (setq org-superstar-todo-bullet-alist '(("TODO"  . 9744)
                                           ("WAIT"  . 9744)
-                                          ("READ"  . 9744)
-                                          ("PROG"  . 9744)
+                                          ("INPROG"  . 9744)
+					  ("DELEGATED" . 9745)
                                           ("DONE"  . 9745))))
 
 (defun my/prettify-symbols-setup ()
@@ -365,6 +365,14 @@
   :bind
   ("C-c n j" . org-journal-new-entry))
 
+;; Add to-do keywords and set their colors
+(setq org-todo-keywords
+      '((sequence "TODO" "WAIT" "INPROG" "|" "DONE" "DELEGATED")))
+
+(setq org-todo-keyword-faces
+      '(("TODO" :inherit org-todo :foreground "#A3BE8C" :weight bold)
+        ("WAIT" :inherit org-todo :foreground "#CAC52F" :weight bold)
+	("INPROG" :inherit org-todo :foreground "#8FBCBB" :weight bold)))
 
 ;; Insert link to non-existing org-roam note without displaying its buffer.
 (defun org-roam-node-insert-immediate (arg &rest args)
