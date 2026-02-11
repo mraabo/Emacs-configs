@@ -39,6 +39,8 @@
       tab-bar-history-mode t
       sentence-end-double-space nil)
 (set-face-attribute 'default nil :font "Iosevka" :height 170)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka")
+(set-face-attribute 'variable-pitch nil :family "Iosevka Etoile")
 
 ;; Global keybindings
 ;; Use cmd key for meta and free option key
@@ -63,8 +65,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-nord t)
-  ;(load-theme 'doom-htb t) ; at Applications/Emacs.app/Contents/Resources/etc/themes/
+  (load-theme 'doom-htb t) ; at Applications/Emacs.app/Contents/Resources/etc/themes/
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
   ;; Enable custom neotree theme (nerd-icons must be installed!)
@@ -196,9 +197,19 @@
 
 ;; Org
 (use-package org
-  :hook (org-mode . visual-line-mode)
+  :hook ((org-mode . visual-line-mode)
+	 (org-mode . variable-pitch-mode))
   :bind ("C-c o i" . org-id-get-create)
   :config
+  ;; Keep these faces fixed-pitch in org-mode
+  (dolist (face '(org-block
+                  org-code
+                  org-table
+                  org-verbatim
+                  org-special-keyword
+                  org-meta-line
+                  org-checkbox))
+    (set-face-attribute face nil :inherit 'fixed-pitch))
   ;; Visuals
   (setq org-startup-with-inline-images t
         org-startup-with-latex-preview t
@@ -359,7 +370,7 @@
 (use-package org-journal
   :ensure t
   :custom
-  (org-journal-dir "~/org/journal")
+  (org-journal-dir "~/org/timelogs")
   (org-journal-file-format "%Y%m%d.org")
   (org-journal-date-format "%A, %d %B %Y")
   :bind
