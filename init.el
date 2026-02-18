@@ -200,6 +200,9 @@
   :hook ((org-mode . visual-line-mode)
 	 (org-mode . variable-pitch-mode))
   :bind ("C-c o i" . org-id-get-create)
+  :custom
+  ;; Remove file/category name in agenda view
+  (org-agenda-prefix-format '((agenda . "  %t% s")))
   :config
   ;; Keep these faces fixed-pitch in org-mode
   (dolist (face '(org-block
