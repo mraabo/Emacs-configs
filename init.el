@@ -204,6 +204,8 @@
   ;; Remove file/category name in agenda view
   (org-agenda-prefix-format '((agenda . "  %t% s")))
   :config
+  ;; Use find-file when opening links instead of default find-file-other-window
+  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
   ;; hook org-display-inline-images to org-insert-link
   (advice-add 'org-insert-link :after
             (lambda (&rest _) ;; lambda function with ignored input
