@@ -204,6 +204,11 @@
   ;; Remove file/category name in agenda view
   (org-agenda-prefix-format '((agenda . "  %t% s")))
   :config
+  ;; hook org-display-inline-images to org-insert-link
+  (advice-add 'org-insert-link :after
+            (lambda (&rest _) ;; lambda function with ignored input
+              (when (derived-mode-p 'org-mode) ; guard that ensures org-mode
+                (org-display-inline-images))))
   ;; Keep these faces fixed-pitch in org-mode
   (dolist (face '(org-block
                   org-code
@@ -369,6 +374,11 @@
   :load-path "~/projects/emacs/pretty-org-tables/org-pretty-table.el"
   :hook (org-mode . org-pretty-table-mode))
 
+;; org-journal
+
+(defun org-journal-file-header-func (time)
+  "Custom function to create journal header."
+  (concat "#+title: " (format-time-string "%A, %d %B %Y" time)))
 
 (use-package org-journal
   :ensure t
@@ -376,10 +386,9 @@
   (org-journal-dir "~/org/timelogs")
   (org-journal-file-format "%Y%m%d.org")
   (org-journal-date-format "%A, %d %B %Y")
-  ;; put a custom title line in every new journal entry
-  (org-journal-entry-format (concat "#+title: %a, %d %B %Y\n\n"))
   ;; add aggregated clocks to org-agenda
   (org-agenda-files '("~/org/timelogs/aggregated_clocks.org"))
+  (org-journal-file-header 'org-journal-file-header-func)
   :bind
   ("C-c n j" . org-journal-new-entry))
 
