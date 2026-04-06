@@ -181,9 +181,14 @@
 (setq-default TeX-master nil)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
 (setq reftex-plug-into-AUCTeX t)
-(pdf-tools-install)
 (setq LaTeX-default-environment "equation*")
 
+
+;; PDF rendering
+(pdf-tools-install)
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-s") #'isearch-forward)))
 
 ;; Spelling correction
 (setq-default ispell-program-name "aspell")
