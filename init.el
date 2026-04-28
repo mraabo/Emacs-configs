@@ -258,7 +258,11 @@
   ;; org-clock
   (org-clock-persistence-insinuate)
   (setq org-clock-out-when-done t
-	org-clock-persist t))
+	org-clock-persist t)
+  ;; org-babel
+  (org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)))) ; load R)
  
 
 (use-package org-roam
