@@ -8,7 +8,7 @@
  '(custom-safe-themes
    '("e900ae738225380abd1edc0c76535a12b8a6669c7a3180431ba0157a47bbf75e" "8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" "fd22a3aac273624858a4184079b7134fb4e97104d1627cb2b488821be765ff17" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" default))
  '(package-selected-packages
-   '(ess catppuccin-theme org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(listen ess catppuccin-theme org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -134,6 +134,15 @@
   :config
   (elfeed-org)
   (setq rmh-elfeed-org-files (list "elfeed.org")))
+
+;; Browser
+
+;; Use EWW as standard browser for links
+(setq browse-url-browser-function 'eww-browse-url)
+;; Define Firefox
+(setq browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
+;; Define Chromium
+(setq browse-url-chromium-program "/Applications/Chromium.app/Contents/MacOS/Chromium")
 
 ;; Documentation
 (use-package helpful
@@ -286,8 +295,10 @@
 
 (use-package org-roam-ui
   :after org-roam
-  :config
-  (setq org-roam-ui-sync-theme t))
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-browser-function #'browse-url-chromium))
+
 
 (use-package org-fragtog ;; hides latex source until touched by cursor
   :hook (org-mode . org-fragtog-mode))        
@@ -377,7 +388,7 @@
 (use-package olivetti
   :config
   (setq-default olivetti-body-width 82)
-  ;; Auto‑enable in Org buffers
+  ;; Auto-enable in Org buffers
   (add-hook 'org-mode-hook #'olivetti-mode))
 
 
@@ -400,8 +411,7 @@
   ;; add aggregated clocks to org-agenda
   (org-agenda-files '("~/org/timelogs/aggregated_clocks.org"))
   (org-journal-file-header 'org-journal-file-header-func)
-  :bind
-  ("C-c n j" . org-journal-new-entry))
+  :bind ("C-c n j" . (lambda () (interactive) (org-journal-new-entry t))))
 
 ;; Add to-do keywords and set their colors
 (setq org-todo-keywords
@@ -439,12 +449,21 @@
 (setq gamify-org-roam-p t)  ; Enable Org Roam gamification
 (gamify-start)
 
+;; Download-media
+(load-file "~/projects/emacs/download-media/download-media.el")
+
+
+;; Music player
+(use-package listen
+  :custom
+  (listen-directory "~/Documents/media/music")
+  :bind
+  ("C-x m" . listen-menu))
 
 ;; Debugging
 (use-package dape
   :init
   (setq
-   
    dape-configs
    '(
      (go-main ;; debug main .go file
