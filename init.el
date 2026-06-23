@@ -8,15 +8,128 @@
  '(custom-safe-themes
    '("e900ae738225380abd1edc0c76535a12b8a6669c7a3180431ba0157a47bbf75e" "8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "014cb63097fc7dbda3edf53eb09802237961cbb4c9e9abd705f23b86511b0a69" "fd22a3aac273624858a4184079b7134fb4e97104d1627cb2b488821be765ff17" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" default))
  '(package-selected-packages
-   '(elfeed listen ess catppuccin-theme org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex)))
+   '(elfeed listen ess catppuccin-theme org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex))
+ '(safe-local-variable-values
+   '((eval setq-local org-download-image-dir
+	   (concat "~/personal_website/static/htb_writeups/"
+		   (file-name-base
+		    (buffer-file-name))))
+     (eval progn
+	   (org-hugo-auto-export-mode)
+	   (add-hook 'before-save-hook
+		     (lambda nil
+		       (let*
+			   ((source-root
+			     (locate-dominating-file
+			      (buffer-file-name)
+			      ".dir-locals.el"))
+			    (rel-path
+			     (file-relative-name
+			      (buffer-file-name)
+			      source-root))
+			    (rel-dir
+			     (file-name-directory rel-path)))
+			 (setq org-hugo-section
+			       (if
+				   (or
+				    (null rel-dir)
+				    (string= rel-dir "./")
+				    (string= rel-dir "."))
+				   nil
+				 (directory-file-name rel-dir)))
+			 (let*
+			     ((title
+			       (cadr
+				(assoc "TITLE"
+				       (org-collect-keywords
+					'("TITLE")))))
+			      (slug
+			       (when title
+				 (downcase
+				  (replace-regexp-in-string "[^a-z0-9]+" "-"
+							    (replace-regexp-in-string "^-+\\|-+$" ""
+										      (downcase title)))))))
+			   (when slug
+			     (org-set-property "EXPORT_FILE_NAME" slug)))))
+		     nil t))
+     (eval progn
+	   (org-hugo-auto-export-mode)
+	   (add-hook 'before-save-hook
+		     (lambda nil
+		       (let*
+			   ((source-root
+			     (locate-dominating-file
+			      (buffer-file-name)
+			      ".dir-locals.el"))
+			    (rel-path
+			     (file-relative-name
+			      (buffer-file-name)
+			      source-root))
+			    (rel-dir
+			     (file-name-directory rel-path)))
+			 (setq org-hugo-section
+			       (if
+				   (or
+				    (null rel-dir)
+				    (string= rel-dir "./")
+				    (string= rel-dir "."))
+				   nil
+				 (directory-file-name rel-dir)))))
+		     nil t))
+     (eval org-hugo-auto-export-mode t)
+     (eval let*
+	   ((source-root
+	     (locate-dominating-file
+	      (buffer-file-name)
+	      ".dir-locals.el")))
+	   (rel-path
+	    (file-relative-name
+	     (buffer-file-name)
+	     source-root))
+	   (rel-dir
+	    (file-name-directory rel-path))
+	   (setq org-hugo-section
+		 (if
+		     (string= rel-dir ".")
+		     nil)))
+     (eval progn
+	   (defun my/fix-hugo-structure nil
+	     (let*
+		 ((source-root
+		   (locate-dominating-file
+		    (buffer-file-name)
+		    ".dir-locals.el"))
+		  (current-file
+		   (buffer-file-name))
+		  (rel-path
+		   (file-relative-name current-file source-root))
+		  (base-dir "~/quartz/content/")
+		  (flat-md
+		   (expand-file-name
+		    (replace-regexp-in-string "\\.org$" ".md"
+					      (file-name-nondirectory current-file))
+		    base-dir))
+		  (target-md
+		   (expand-file-name
+		    (replace-regexp-in-string "\\.org$" ".md" rel-path)
+		    base-dir)))
+	       (when
+		   (and
+		    (file-exists-p flat-md)
+		    (not
+		     (equal flat-md target-md)))
+		 (make-directory
+		  (file-name-directory target-md)
+		  t)
+		 (rename-file flat-md target-md t))))
+	   (org-hugo-auto-export-mode)
+	   (add-hook 'after-save-hook #'my/fix-hugo-structure nil t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 
 
 ;; create the autosave dir if necessary, since emacs won't.
@@ -197,6 +310,9 @@
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs '("PATH"))))
 
+;; Add nvm to path
+;; which is not fixed by exec-path-from-shell as it is dynamically loaded
+(add-to-list 'exec-path (expand-file-name "~/.nvm/versions/node/v24.16.0/bin"))
 
 
 ;; LaTex
@@ -379,21 +495,40 @@
 (use-package org-download
   :config
   ;; Setting default directory to store images related to the use of org-download.
-  (setq-default org-download-image-dir "~/org/roam/cs_notes/Assets")
+  (setq-default org-download-image-dir "~/org/roam/cs_notes/assets")
   ;; Set all images to have width 600
   (setq org-download-link-format "[[file:%s]]\n" ; format links
          org-download-abbreviate-filename-function #'expand-file-name ; convert to absulate path
 	;; set screenshot method to macos
 	org-download-screenshot-method "screencapture"
 	;; Ensure images are inserted instead of their links when exporting to pdf (I think).
-        org-download-link-format-function #'org-download-link-format-function-default)
-  :bind (("C-c n d" . org-download-clipboard)))
+        org-download-link-format-function #'org-download-link-format-function-default
+	;; Convert filename spaces to underscores (snake_case)
+	org-download-file-format-function
+	(lambda (filename)
+	  (let* ((ext (file-name-extension filename))
+		 (base (file-name-base filename))
+		 (timestamp (format-time-string "%Y%m%d_%H%M%S"))
+		 (clean-base (replace-regexp-in-string
+			      " " "_"
+			      (replace-regexp-in-string ":" "-" (downcase base)))))
+	    (concat clean-base "_" timestamp "." ext))))
+	;; Images are nested in subfolders named after the nearest
+	;; org-download-heading-lvl header.
+	;; This converts the subfolder name to snakescript to avoid spaces in foldernames
+	(advice-add 'org-download--dir-2 :filter-return
+		    (lambda (dir)
+		      (replace-regexp-in-string
+		       " " "_"
+		       (replace-regexp-in-string ":" "-" (downcase dir)))))
+	:bind (("C-c n d" . org-download-clipboard)))
 
 (use-package ox-hugo
   :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
   :after ox
   :config
   (setq org-hugo-base-dir "~/personal_website"))
+
 
 (use-package org-table-wrap-functions
   :load-path "~/projects/emacs/pretty-org-tables"
