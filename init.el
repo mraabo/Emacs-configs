@@ -187,6 +187,10 @@
 (setq mac-command-modifier 'meta
       mac-option-modifier 'none)
 
+;; Map C-v to yank instead of scroll-down for compatibility with Whispr flow
+(global-set-key (kbd "C-v") 'yank)
+
+;; Setup init as register for quick access with C-x + r + i
 (set-register ?i (cons 'file "~/.emacs.d/init.el"))
 
 ;; Package management
