@@ -626,7 +626,7 @@
 ;;(require 'gamify)
 (setq gamify-org-p t)                    ;; Enable Org integration
 (setq gamify-stats-file "~/.emacs.d/gamify-stats")  ;; Optional: set custom path
-(setq gamify-focus-stats '("Haskell")) ;; Set initial viewpoint of bar - set to what your working on.
+(setq gamify-focus-stats '("Computer_security")) ;; Set initial viewpoint of bar - set to what your working on.
 (gamify-setup-progress-bars)
 (setq gamify-format "%Lf %PBF")  ; Shows: Level [████░░░░] pct%
 (setq gamify-org-roam-p t)  ; Enable Org Roam gamification
@@ -642,6 +642,33 @@
   (listen-directory "~/Documents/media/music")
   :bind
   ("C-x m" . listen-menu))
+
+;; Language server support
+(use-package eglot
+  :hook ((c-mode . eglot-ensure)
+	 (c++-mode . eglot-ensure))
+  :bind (:map eglot-mode-map
+	      ("C-c r" . eglot-rename)
+              ("C-c a" . eglot-code-actions)
+              ("C-c f" . eglot-format)
+              ("C-c d" . eldoc-doc-buffer))
+  :config
+  (add-hook 'before-save-hook
+          (lambda ()
+            (when (eglot-current-server)
+              (ignore-errors
+                (eglot-format-buffer)))))
+  (add-to-list 'eglot-server-programs
+               '((c-mode c++-mode) . ("clangd" ; use clang
+				      ; speed up subsequent lookup by caching
+                                      "--background-index"
+				      ; add linting diagnostics on top of compile errors
+                                      "--clang-tidy"
+				      ; get more details in auto-complete candidates
+                                      "--completion-style=detailed"
+				      ; auto-insert header files used in auto-completes
+                                      "--header-insertion=iwyu")))  
+  )
 
 ;; Debugging
 (use-package dape
@@ -662,21 +689,26 @@
                  :program "."
                  :args []))))
 
-;; Haskell
+;;; Haskell
 (use-package haskell-mode)
 (let ((my-ghcup-path (expand-file-name "~/.ghcup/bin")))
   (setenv "PATH" (concat my-ghcup-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-ghcup-path))
 
-;; Golang
+;;; Golang
 (use-package go-mode
   :init
   (add-hook 'before-save-hook #'gofmt-before-save))
 
-;; R
-(use-package ess) ; necessary for R
-  
+;;; C programming
+(setq c-basic-indent 4)
+(setq c-basic-offset 4)
+;; do not indent inside namespaces
+(c-set-offset 'innamespace 0)
 
-
-
-
+(use-package cc-mode
+  :ensure nil
+  :bind (:map c-mode-map
+              ("C-c C-c" . project-compile)
+	      ("C-c p" . previous-error)
+	      ("C-c n" . next-error)))
