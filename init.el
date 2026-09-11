@@ -1,7 +1,7 @@
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
+ ;; Your Init File should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/")))
@@ -10,147 +10,17 @@
  '(package-selected-packages
    '(elfeed listen ess catppuccin-theme org-journal all-the-icons-ivy-rich dape dap-dlv-go go-mode go org-roam-ui python-mode fontawesome abc-mode abs-mode quelpa-use-package elfeed-org ox-hugo exec-path-from-shell lsp-ivy lsp-haskell dap-haskell dap-mode helm-lsp lsp-ui haskell-mode quelpa gamify which-key projectile all-the-icons helpful counsel ivy doom-modeline helm lsp-mode svg-tag-mode olivetti org-download magit org-roam org-fragtog org-appear org-superstar jinx pdf-tools doom-themes auctex))
  '(safe-local-variable-values
-   '((eval progn
-	   (org-hugo-auto-export-mode)
-	   (add-hook 'before-save-hook
-		     (lambda nil
-		       (let*
-			   ((source-root
-			     (locate-dominating-file
-			      (buffer-file-name)
-			      ".dir-locals.el"))
-			    (rel-path
-			     (when source-root
-			       (file-relative-name
-				(buffer-file-name)
-				source-root)))
-			    (rel-dir
-			     (when rel-path
-			       (file-name-directory rel-path))))
-			 (when source-root
-			   (setq-local org-hugo-section
-				       (if
-					   (or
-					    (null rel-dir)
-					    (string= rel-dir "./")
-					    (string= rel-dir "."))
-					   nil
-					 (directory-file-name rel-dir))))))
-		     nil t))
-     (eval setq-local org-download-image-dir
-	   (concat "~/personal_website/static/htb_writeups/"
-		   (file-name-base
-		    (buffer-file-name))))
-     (eval progn
-	   (org-hugo-auto-export-mode)
-	   (add-hook 'before-save-hook
-		     (lambda nil
-		       (let*
-			   ((source-root
-			     (locate-dominating-file
-			      (buffer-file-name)
-			      ".dir-locals.el"))
-			    (rel-path
-			     (file-relative-name
-			      (buffer-file-name)
-			      source-root))
-			    (rel-dir
-			     (file-name-directory rel-path)))
-			 (setq org-hugo-section
-			       (if
-				   (or
-				    (null rel-dir)
-				    (string= rel-dir "./")
-				    (string= rel-dir "."))
-				   nil
-				 (directory-file-name rel-dir)))
-			 (let*
-			     ((title
-			       (cadr
-				(assoc "TITLE"
-				       (org-collect-keywords
-					'("TITLE")))))
-			      (slug
-			       (when title
-				 (downcase
-				  (replace-regexp-in-string "[^a-z0-9]+" "-"
-							    (replace-regexp-in-string "^-+\\|-+$" ""
-										      (downcase title)))))))
-			   (when slug
-			     (org-set-property "EXPORT_FILE_NAME" slug)))))
-		     nil t))
-     (eval progn
-	   (org-hugo-auto-export-mode)
-	   (add-hook 'before-save-hook
-		     (lambda nil
-		       (let*
-			   ((source-root
-			     (locate-dominating-file
-			      (buffer-file-name)
-			      ".dir-locals.el"))
-			    (rel-path
-			     (file-relative-name
-			      (buffer-file-name)
-			      source-root))
-			    (rel-dir
-			     (file-name-directory rel-path)))
-			 (setq org-hugo-section
-			       (if
-				   (or
-				    (null rel-dir)
-				    (string= rel-dir "./")
-				    (string= rel-dir "."))
-				   nil
-				 (directory-file-name rel-dir)))))
-		     nil t))
-     (eval org-hugo-auto-export-mode t)
-     (eval let*
-	   ((source-root
-	     (locate-dominating-file
-	      (buffer-file-name)
-	      ".dir-locals.el")))
-	   (rel-path
-	    (file-relative-name
-	     (buffer-file-name)
-	     source-root))
-	   (rel-dir
-	    (file-name-directory rel-path))
-	   (setq org-hugo-section
-		 (if
-		     (string= rel-dir ".")
-		     nil)))
-     (eval progn
-	   (defun my/fix-hugo-structure nil
-	     (let*
-		 ((source-root
-		   (locate-dominating-file
-		    (buffer-file-name)
-		    ".dir-locals.el"))
-		  (current-file
-		   (buffer-file-name))
-		  (rel-path
-		   (file-relative-name current-file source-root))
-		  (base-dir "~/quartz/content/")
-		  (flat-md
-		   (expand-file-name
-		    (replace-regexp-in-string "\\.org$" ".md"
-					      (file-name-nondirectory current-file))
-		    base-dir))
-		  (target-md
-		   (expand-file-name
-		    (replace-regexp-in-string "\\.org$" ".md" rel-path)
-		    base-dir)))
-	       (when
-		   (and
-		    (file-exists-p flat-md)
-		    (not
-		     (equal flat-md target-md)))
-		 (make-directory
-		  (file-name-directory target-md)
-		  t)
-		 (rename-file flat-md target-md t))))
-	   (org-hugo-auto-export-mode)
-	   (add-hook 'after-save-hook #'my/fix-hugo-structure nil t)))))
+   '((eval when
+	   (buffer-file-name)
+	   (setq-local org-download-image-dir
+		       (concat "~/personal_website/static/"
+			       (file-name-nondirectory
+				(directory-file-name
+				 (file-name-directory
+				  (buffer-file-name))))
+			       "/"
+			       (file-name-base
+				(buffer-file-name))))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -187,8 +57,6 @@
 (setq mac-command-modifier 'meta
       mac-option-modifier 'none)
 
-;; Map M-v to yank instead of scroll-up for compatibility with Whispr flow
-(global-set-key (kbd "M-v") 'yank)
 
 ;; Setup init as register for quick access with C-x + r + i
 (set-register ?i (cons 'file "~/.emacs.d/init.el"))
